@@ -7,10 +7,12 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import Icon from '@/components/ui/icon';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 const Index = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState('home');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const projects = [
     {
@@ -50,8 +52,17 @@ const Index = () => {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
       setActiveSection(id);
+      setMobileMenuOpen(false);
     }
   };
+
+  const menuItems = [
+    { id: 'home', label: 'Главная' },
+    { id: 'about', label: 'Обо мне' },
+    { id: 'skills', label: 'Навыки' },
+    { id: 'works', label: 'Работы' },
+    { id: 'contact', label: 'Контакты' }
+  ];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -60,25 +71,53 @@ const Index = () => {
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold text-gradient">Designer</h1>
             <div className="hidden md:flex gap-8">
-              {['home', 'about', 'skills', 'works', 'contact'].map((section) => (
+              {menuItems.map((item) => (
                 <button
-                  key={section}
-                  onClick={() => scrollToSection(section)}
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
                   className={`text-sm font-medium transition-colors hover:text-primary ${
-                    activeSection === section ? 'text-primary' : 'text-muted-foreground'
+                    activeSection === item.id ? 'text-primary' : 'text-muted-foreground'
                   }`}
                 >
-                  {section === 'home' && 'Главная'}
-                  {section === 'about' && 'Обо мне'}
-                  {section === 'skills' && 'Навыки'}
-                  {section === 'works' && 'Работы'}
-                  {section === 'contact' && 'Контакты'}
+                  {item.label}
                 </button>
               ))}
             </div>
-            <Button variant="outline" size="sm" className="md:hidden">
-              <Icon name="Menu" size={20} />
-            </Button>
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="sm" className="md:hidden">
+                  <Icon name="Menu" size={20} />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <nav className="flex flex-col gap-6 mt-8">
+                  {menuItems.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => scrollToSection(item.id)}
+                      className={`text-left text-2xl font-semibold transition-colors hover:text-primary ${
+                        activeSection === item.id ? 'text-primary' : 'text-foreground'
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                  <div className="border-t border-border pt-6 mt-4">
+                    <div className="flex gap-4">
+                      <Button variant="outline" size="icon">
+                        <Icon name="Github" size={20} />
+                      </Button>
+                      <Button variant="outline" size="icon">
+                        <Icon name="Linkedin" size={20} />
+                      </Button>
+                      <Button variant="outline" size="icon">
+                        <Icon name="Mail" size={20} />
+                      </Button>
+                    </div>
+                  </div>
+                </nav>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </nav>
